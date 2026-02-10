@@ -1,5 +1,5 @@
 def main():
-    print("Hello from proyecto1-hiberus!")
+    print("Hello from texkit!")
 
 
 if __name__ == "__main__":
