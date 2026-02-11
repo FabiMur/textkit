@@ -1,6 +1,11 @@
 """Tests for the extractors module."""
 
-from textkit.extractors import DateExtractor, URLExtractor
+from textkit.extractors import (
+    DateExtractor,
+    EmailExtractor,
+    PhoneExtractor,
+    URLExtractor,
+)
 
 
 class TestDateExtractor:
@@ -21,6 +26,40 @@ class TestDateExtractor:
         extractor = DateExtractor()
         dates = extractor.extract(text)
         assert dates == ["01/01/2024", "31/12/2024"]
+
+
+class TestEmailExtractor:
+    def test_extract_emails1(self):
+        text = "Contáctanos en contacto@example.com para más información."
+        extractor = EmailExtractor()
+        emails = extractor.extract(text)
+        assert emails == ["contacto@example.com"]
+
+    def test_extract_emails2(self):
+        text = "No hay correos electrónicos en este texto."
+        extractor = EmailExtractor()
+        emails = extractor.extract(text)
+        assert emails == []
+
+    def test_extract_emails3(self):
+        text = "Correos en diferentes formatos: contacto@example.com, user.name+tag+sorting@example.com."
+        extractor = EmailExtractor()
+        emails = extractor.extract(text)
+        assert emails == ["contacto@example.com", "user.name+tag+sorting@example.com"]
+
+
+class TestPhoneExtractor:
+    def test_extract_phones1(self):
+        text = "Llámanos al +34 123 456 789 o al 123-456-789."
+        extractor = PhoneExtractor()
+        phones = extractor.extract(text)
+        assert phones == ["+34 123 456 789", "123-456-789"]
+
+    def test_extract_phones2(self):
+        text = "No hay números de teléfono en este texto."
+        extractor = PhoneExtractor()
+        phones = extractor.extract(text)
+        assert phones == []
 
 
 class TestURLExtractor:
