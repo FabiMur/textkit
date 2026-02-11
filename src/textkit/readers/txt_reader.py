@@ -1,5 +1,6 @@
 from typing import Iterator
 from .base_reader import BaseReader
+from pathlib import Path
 
 
 class TxtReader(BaseReader):
@@ -13,7 +14,14 @@ class TxtReader(BaseReader):
         :return: Description
         :rtype: Iterator[str]
         """
-        # TODO: Add error handling for file not found, permission issues, etc.
-        with open(file_path, "r", encoding="utf-8") as file:
-            for line in file:
-                yield line
+        if not file_path.endswith(".txt"):
+            raise ValueError("File must have a .txt extension")
+        if not Path(file_path).is_file():
+            raise FileNotFoundError(f"File not found: {file_path}")
+
+        try:
+            with open(file_path, "r", encoding="utf-8") as file:
+                for line in file:
+                    yield line
+        except Exception as e:
+            raise IOError(f"Error reading file {file_path}: {e}")
