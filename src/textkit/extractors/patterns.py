@@ -17,11 +17,13 @@ EMAIL_RE = re.compile(
 URL_RE = re.compile(
     r"""
     \b
-    (https?://)?        # Optional scheme
-    (www\.)?            # Optional www
-    [a-zA-Z0-9.-]+      # Domain
-    \.[a-zA-Z]{2,}      # TLD
-    (/[^\s]*)?          # Optional resource path
+    (
+        (?:https?://)?        # Optional scheme
+        (?:www\.)?            # Optional www
+        [a-zA-Z0-9.-]+        # Domain
+        \.[a-zA-Z]{2,}        # TLD
+        (?:/[^\s]*)?          # Optional resource path
+    )
     \b
     """,
     re.VERBOSE,
