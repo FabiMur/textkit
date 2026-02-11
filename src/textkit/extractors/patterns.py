@@ -3,20 +3,22 @@ import re
 # Matches standard email addresses.
 # Format: username@domain.tld
 EMAIL_RE = re.compile(
-    r""""
-    \b
+    r"""
+    (?<!\w)
     [a-zA-Z0-9._%+-]+   # Username
     @
     [a-zA-Z0-9.-]+      # Domain
     \.[a-zA-Z]{2,}      # TLD
-    \b"""
+    (?!\w)
+    """,
+    re.VERBOSE,
 )
 
 # Matches URLs with optional scheme, www and resource path.
 # Format: [scheme://][www.]domain.tld[/path]
 URL_RE = re.compile(
     r"""
-    \b
+    (?<!\w)
     (
         (?:https?://)?        # Optional scheme
         (?:www\.)?            # Optional www
@@ -24,7 +26,7 @@ URL_RE = re.compile(
         \.[a-zA-Z]{2,}        # TLD
         (?:/[^\s]*)?          # Optional resource path
     )
-    \b
+    (?!\w)
     """,
     re.VERBOSE,
 )
@@ -33,7 +35,7 @@ URL_RE = re.compile(
 # Format: DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY
 DATE_EU_RE = re.compile(
     r"""
-    \b
+    (?<!\w)
     (
         (?:0?[1-9]|[12][0-9]|3[01]) # Day 1-31
         [\./-]                      # Separator
@@ -41,7 +43,7 @@ DATE_EU_RE = re.compile(
         [\./-]                      # Separator
         \d{4}                       # Year
     )
-    \b
+    (?!\w)
     """,
     re.VERBOSE,
 )
@@ -50,12 +52,12 @@ DATE_EU_RE = re.compile(
 # Format: [+][country code][number]
 PHONE_EU_RE = re.compile(
     r"""
-    \b
+    (?<!\w)                       # Ensure pattern is not preceded by a word character
     (
         (?:\+\d{1,3}[\s-]?)?      # Optional +country code
         (?:\d[\s-]?){8}\d         # 9-digit number with optional separators
     )
-    \b
+    (?!\w)                        # Ensure pattern is not followed by a word character
     """,
     re.VERBOSE,
 )
