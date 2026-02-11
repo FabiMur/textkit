@@ -4,4 +4,5 @@ from .patterns import URL_RE
 
 class URLExtractor(BaseExtractor):
     def extract(self, text: str) -> list[str]:
-        return URL_RE.findall(text)
+        urls = URL_RE.findall(text)
+        return [u.rstrip(".,;:!?)]}\"'") for u in urls]
