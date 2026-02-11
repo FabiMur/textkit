@@ -32,11 +32,13 @@ URL_RE = re.compile(
 DATE_EU_RE = re.compile(
     r"""
     \b
-    (0?[1-9]|[12][0-9]|3[01])   # Day 1-31
-    [\./-]                      # Separator
-    (0?[1-9]|1[0-2])            # Month 1-12
-    [\./-]                      # Separator
-    \d{4}                       # Year (4 digits)
+    (
+        (?:0?[1-9]|[12][0-9]|3[01]) # Day 1-31
+        [\./-]                      # Separator
+        (?:0?[1-9]|1[0-2])          # Month
+        [\./-]                      # Separator
+        \d{4}                       # Year
+    )
     \b
     """,
     re.VERBOSE,
