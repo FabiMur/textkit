@@ -51,8 +51,10 @@ DATE_EU_RE = re.compile(
 PHONE_EU_RE = re.compile(
     r"""
     \b
-    (\+(\d{1,3})[\s-]?)?      # +CC (optional)
-    ((\d[\s-]?){8}\d)         # 9-digit number
+    (
+        (?:\+\d{1,3}[\s-]?)?      # Optional +country code
+        (?:\d[\s-]?){8}\d         # 9-digit number with optional separators
+    )
     \b
     """,
     re.VERBOSE,
