@@ -1,7 +1,7 @@
 import re
 
 # Matches standard email addresses.
-# Format: username@domain.tld
+# Format username@domain.tld
 EMAIL_RE = re.compile(
     r"""
     (?<!\w)
@@ -15,7 +15,7 @@ EMAIL_RE = re.compile(
 )
 
 # Matches URLs with optional scheme, www and resource path.
-# Format: [scheme://][www.]domain.tld[/path]
+# Format [scheme://][www.]domain.tld[/path]
 URL_RE = re.compile(
     r"""
     (?<!\w)
@@ -32,7 +32,7 @@ URL_RE = re.compile(
 )
 
 # Matches European date formats
-# Format: DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY
+# Format DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY
 DATE_EU_RE = re.compile(
     r"""
     (?<!\w)
@@ -49,7 +49,7 @@ DATE_EU_RE = re.compile(
 )
 
 # Matches phone numbers with country code and exactly 9 digits.
-# Format: [+][country code][number]
+# Format [+][country code][number]
 PHONE_EU_RE = re.compile(
     r"""
     (?<!\w)                       # Ensure pattern is not preceded by a word character

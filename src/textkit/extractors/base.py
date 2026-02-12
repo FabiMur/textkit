@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from collections.abc import Iterable
 
 
 class BaseExtractor(ABC):
     @abstractmethod
-    def extract(self, text: str) -> Iterable[str]:
+    def extract(self, text: str) -> list[str]:
         raise NotImplementedError("Subclasses must implement this method")

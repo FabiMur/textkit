@@ -42,7 +42,10 @@ class TestEmailExtractor:
         assert emails == []
 
     def test_extract_emails3(self):
-        text = "Correos en diferentes formatos: contacto@example.com, user.name+tag+sorting@example.com."
+        text = (
+            "Correos en diferentes formatos: contacto@example.com, "
+            "user.name+tag+sorting@example.com."
+        )
         extractor = EmailExtractor()
         emails = extractor.extract(text)
         assert emails == ["contacto@example.com", "user.name+tag+sorting@example.com"]
@@ -64,9 +67,7 @@ class TestPhoneExtractor:
 
 class TestURLExtractor:
     def test_extract_urls1(self):
-        text = (
-            "Visita nuestro sitio web en https://www.example.com o http://example.org."
-        )
+        text = "Visita nuestro sitio web en https://www.example.com o http://example.org."
         extractor = URLExtractor()
         urls = extractor.extract(text)
         assert urls == ["https://www.example.com", "http://example.org"]
