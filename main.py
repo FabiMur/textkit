@@ -1,5 +1,8 @@
+import logging
+
+
 def main():
-    print("Hello from texkit!")
+    logging.info("Hello from texkit!")
 
 
 if __name__ == "__main__":

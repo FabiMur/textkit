@@ -1,6 +1,7 @@
-from typing import Iterator
-from .base_reader import BaseReader
+from collections.abc import Iterator
 from pathlib import Path
+
+from .base_reader import BaseReader
 
 
 class TxtReader(BaseReader):
@@ -20,8 +21,8 @@ class TxtReader(BaseReader):
             raise FileNotFoundError(f"File not found: {file_path}")
 
         try:
-            with open(file_path, "r", encoding="utf-8") as file:
+            with Path(file_path).open(encoding="utf-8") as file:
                 for line in file:
-                    yield line
+                    yield from line
         except Exception as e:
-            raise IOError(f"Error reading file {file_path}: {e}")
+            raise OSError(f"Error reading {file_path}: {e}") from e
