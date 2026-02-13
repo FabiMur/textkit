@@ -1,11 +1,11 @@
-from .date_extractor import DateExtractor
-from .email_extractor import EmailExtractor
-from .phone_extractor import PhoneExtractor
-from .url_extractor import URLExtractor
+from .date import extract_date
+from .email import extract_email
+from .phone import extract_phone
+from .url import extract_url
 
 __all__ = [
-    "DateExtractor",
-    "EmailExtractor",
-    "PhoneExtractor",
-    "URLExtractor",
+    "extract_date",
+    "extract_email",
+    "extract_phone",
+    "extract_url",
 ]
