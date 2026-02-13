@@ -1,5 +1,5 @@
 from typing import Protocol
 
 
-class BaseExtractor(Protocol):
-    def extract(self, text: str) -> list[str]: ...
+class Extractor(Protocol):
+    def __call__(self, text: str) -> list[str]: ...
