@@ -1,4 +1,4 @@
-from typing import Iterator
+from collections.abc import Iterator
 from src.textkit.extractors import (
     DateExtractor,
     EmailExtractor,
