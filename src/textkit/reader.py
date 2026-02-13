@@ -39,7 +39,6 @@ class Reader:
 
         try:
             with Path(file_path).open(encoding="utf-8") as file:
-                for line in file:
-                    yield from line
+                yield from file
         except Exception as e:
             raise OSError(f"Error reading {file_path}: {e}") from e
