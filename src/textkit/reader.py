@@ -4,7 +4,7 @@ from zipfile import Path
 
 class Reader:
     def __init__(self):
-        self._supported_formats = ["txt", "html", "md"]
+        self._supported_formats = ["txt"]
 
     def read(self, file_path: str):
         """
