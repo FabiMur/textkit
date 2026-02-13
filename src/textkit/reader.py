@@ -1,11 +1,28 @@
 from collections.abc import Iterator
-from pathlib import Path
-
-from .base_reader import BaseReader
+from zipfile import Path
 
 
-class TxtReader(BaseReader):
-    def read(self, file_path: str) -> Iterator[str]:
+class Reader:
+    def __init__(self):
+        self._supported_formats = ["txt", "html", "md"]
+
+    def read(self, file_path: str):
+        """
+        Docstring for read
+
+        :param self: Description
+        :param file_path: Description
+        :type file_path: str
+        """
+        extension = file_path.split(".")[-1].lower()
+        if extension not in self._supported_formats:
+            raise ValueError(f"Unsupported file format: {extension}")
+
+        if extension == "txt":
+            return self._read_txt(file_path)
+        return None
+
+    def _read_txt(self, file_path: str) -> Iterator[str]:
         """
         Reads a text file and yields its lines one by one.
 
