@@ -24,5 +24,8 @@ def transform_pipeline(args: argparse.Namespace):
             elif chosen_transformation == "tokenize_sentences":
                 result = tokenize_sentences(line)
 
-            for item in result:
-                writer.write(item + "\n")
+            if isinstance(result, list):
+                for item in result:
+                    writer.write(f"{item}\n")
+            else:
+                writer.write(f"{result}\n")
