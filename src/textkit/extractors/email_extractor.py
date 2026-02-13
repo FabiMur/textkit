@@ -1,7 +1,10 @@
+import re
+
 from .base import BaseExtractor
-from .patterns import EMAIL_RE
+from .patterns import EMAIL_PATTERN
 
 
 class EmailExtractor(BaseExtractor):
     def extract(self, text: str) -> list[str]:
-        return EMAIL_RE.findall(text)
+        regex = re.compile(EMAIL_PATTERN, re.VERBOSE)
+        return regex.findall(text)
