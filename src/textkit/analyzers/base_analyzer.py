@@ -1,8 +1,8 @@
 from collections.abc import Iterable
-from typing import Protocol, Any, runtime_checkable
+from typing import Any, Protocol
 
-@runtime_checkable
+
 class Analyzer(Protocol):
     def analyze(self, data: Iterable[Any]) -> dict[str, Any]:
-        """Consume un iterable de datos y devuelve métricas acumuladas."""
+        """Recibe un iterable de datos y devuelve métricas de análisis."""
         ...

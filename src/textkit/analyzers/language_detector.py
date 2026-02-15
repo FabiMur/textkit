@@ -1,18 +1,33 @@
-from .pattern_analyzer import PatternAnalyzer
+from collections.abc import Iterable
+
+from .sequence_analyzer import SequenceAnalyzer
+
 
 class LanguageDetector:
-    def analyze(self, tokens: list[str]) -> dict:
-        """Detecta el idioma comparando el texto con perfiles de trigramas."""
-        full_text = "".join(tokens).lower()
-        text_trigrams = set(PatternAnalyzer.generate_sequences(full_text, 3))
+    def analyze(self, token_stream: Iterable[list[str]]) -> dict:
+        """
+        Analiza el flujo de tokens para determinar el idioma.
+
+        :param token_stream: Iterable de listas de palabras.
+        :return: Resultados de detección y puntuaciones por idioma.
+        """
+        all_trigrams = set()
+
+        for token_list in token_stream:
+            text_line = "".join(token_list).lower()
+            line_trigrams = SequenceAnalyzer.generate_sequences(text_line, 3)
+            all_trigrams.update(line_trigrams)
 
         profiles = {
             "es": {"cio", "est", "ado"},
             "en": {"the", "ing", "ion"},
-            "fr": {"ons", "ais", "eau"}
+            "fr": {"ons", "ais", "eau"},
         }
 
-        scoring = self._get_language_scores(text_trigrams, profiles)
+        scoring = {
+            language: len(all_trigrams.intersection(profile))
+            for language, profile in profiles.items()
+        }
         winner = self._identify_winner(scoring)
 
         return {
@@ -20,10 +35,8 @@ class LanguageDetector:
             "language_scores": scoring,
         }
 
-    def _get_language_scores(self, text_trigrams: set, profiles: dict) -> dict[str, int]:
-        return {lang: len(text_trigrams.intersection(prof)) for lang, prof in profiles.items()}
-
     def _identify_winner(self, scoring: dict[str, int]) -> str:
+        """Determina el idioma con mayor puntuación de coincidencia."""
         if not scoring or sum(scoring.values()) == 0:
             return "unknown"
         return max(scoring, key=scoring.__getitem__)

@@ -1,13 +1,13 @@
 from .base_analyzer import Analyzer
-from .volume_analyzer import VolumeAnalyzer
-from .pattern_analyzer import PatternAnalyzer
-from .language_detector import LanguageDetector
 from .extract_analyzer import ExtractAnalyzer
+from .language_detector import LanguageDetector
+from .sequence_analyzer import SequenceAnalyzer
+from .statistics_analyzer import StatisticsAnalyzer
 
 __all__ = [
     "Analyzer",
-    "VolumeAnalyzer",
-    "PatternAnalyzer",
-    "LanguageDetector",
     "ExtractAnalyzer",
+    "LanguageDetector",
+    "SequenceAnalyzer",
+    "StatisticsAnalyzer",
 ]
