@@ -11,6 +11,13 @@ def create_parser() -> argparse.ArgumentParser:
     analyze_parser.add_argument(
         "--output", help="Path to the output file.", default="output.txt", type=str
     )
+    analyze_parser.add_argument(
+        "--ngram_size",
+        help="N-gram size for sequence analysis.",
+        choices=[1, 2, 3, 4, 5],
+        type=int,
+        required=True,
+    )
 
     extract_parser = subparsers.add_parser("extract")
     extract_parser.add_argument("--input", help="Path to the input text file.", type=str)

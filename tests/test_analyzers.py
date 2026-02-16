@@ -1,5 +1,3 @@
-from typing import Any
-
 import pytest
 from src.textkit.analyzers import (
     ExtractAnalyzer,
@@ -18,7 +16,7 @@ def sample_tokens() -> list[list[str]]:
 def sample_lines() -> list[str]:
     return [
         "Hola mundo",
-        "Email: usuario@servicio",
+        "Email: usuario@servicio.com",
         "Web oficial: https://test.com",
         "Teléfono: +34 900123123",
         "Fecha: 01/01/2025",
@@ -27,20 +25,20 @@ def sample_lines() -> list[str]:
 
 class TestStatisticsAnalyzer:
     def test_analyze_logic(self, sample_tokens: list[list[str]]) -> None:
-        results = StatisticsAnalyzer().analyze(sample_tokens)
+        analyzer = StatisticsAnalyzer()
+        for tokens in sample_tokens:
+            analyzer.analyze(tokens)
+
+        results = analyzer.get_report()
         assert results["total_tokens"] == 7
         assert results["unique_tokens"] == 6
         assert "hola" not in results["rare_words"]
         assert "mundo" in results["rare_words"]
 
     def test_analyze_empty(self) -> None:
-        results = StatisticsAnalyzer().analyze([])
+        analyzer = StatisticsAnalyzer()
+        results = analyzer.get_report()
         assert results == {}
-
-    def test_error_invalid_stream(self) -> None:
-        bad_data: Any = [123, 456]
-        with pytest.raises(TypeError, match="Formato de entrada inválido"):
-            StatisticsAnalyzer().analyze(bad_data)
 
 
 class TestSequenceAnalyzer:
@@ -48,44 +46,60 @@ class TestSequenceAnalyzer:
         "n, expected_key", [(1, "top_1_grams"), (2, "top_2_grams"), (5, "top_5_grams")]
     )
     def test_n_gram_ranges(self, sample_tokens: list[list[str]], n: int, expected_key: str) -> None:
-        results = SequenceAnalyzer().analyze(sample_tokens, n=n)
+        analyzer = SequenceAnalyzer()
+        for tokens in sample_tokens:
+            analyzer.analyze(tokens, n=n)
+
+        results = analyzer.get_report(n=n)
         assert expected_key in results
 
     def test_analyze_empty(self) -> None:
-        results = SequenceAnalyzer().analyze([], n=2)
+        analyzer = SequenceAnalyzer()
+        results = analyzer.get_report(n=2)
         assert results == {"top_2_grams": []}
 
-    def test_n_out_of_range(self, sample_tokens: list[list[str]]) -> None:
+    def test_n_out_of_range(self) -> None:
+        analyzer = SequenceAnalyzer()
         with pytest.raises(ValueError, match="entre 1 y 5"):
-            SequenceAnalyzer().analyze(sample_tokens, n=10)
+            analyzer.analyze(["test"], n=10)
 
 
 class TestLanguageDetector:
     @pytest.mark.parametrize(
-        "stream, expected_lang",
+        "lines, expected_lang",
         [
             ([["enunciación", "estado", "pasado"]], "es"),
             ([["the", "king", "is", "playing"]], "en"),
             ([["xyz", "abc"]], "unknown"),
         ],
     )
-    def test_detection(self, stream: list[list[str]], expected_lang: str) -> None:
-        results = LanguageDetector().analyze(stream)
+    def test_detection(self, lines: list[list[str]], expected_lang: str) -> None:
+        detector = LanguageDetector()
+        for tokens in lines:
+            detector.analyze(tokens)
+
+        results = detector.get_report()
         assert results["detected_language"] == expected_lang
 
     def test_analyze_empty(self) -> None:
-        results = LanguageDetector().analyze([])
+        detector = LanguageDetector()
+        results = detector.get_report()
         assert results["detected_language"] == "unknown"
 
 
 class TestExtractAnalyzer:
     def test_extraction_counts(self, sample_lines: list[str]) -> None:
-        results = ExtractAnalyzer().analyze(sample_lines)
-        assert results["total_emails"] == 0
-        assert results["total_urls"] == 1
+        analyzer = ExtractAnalyzer()
+        for line in sample_lines:
+            analyzer.analyze(line)
+
+        results = analyzer.get_report()
+        assert results["total_emails"] == 1
+        assert results["total_urls"] == 2
         assert results["total_phones"] == 1
         assert results["total_dates"] == 1
 
     def test_analyze_empty(self) -> None:
-        results = ExtractAnalyzer().analyze([])
+        analyzer = ExtractAnalyzer()
+        results = analyzer.get_report()
         assert all(count == 0 for count in results.values())

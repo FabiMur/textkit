@@ -1,35 +1,22 @@
-from collections.abc import Iterable
-
-from src.textkit.extractors.date import extract_date
-from src.textkit.extractors.email import extract_email
-from src.textkit.extractors.phone import extract_phone
-from src.textkit.extractors.url import extract_url
+from src.textkit.extractors import extract_date, extract_email, extract_phone, extract_url
 
 
 class ExtractAnalyzer:
-    def __init__(self):
-        """Mapeo de funciones extractoras."""
-        self.extractors = {
-            "dates": extract_date,
-            "emails": extract_email,
-            "phones": extract_phone,
-            "urls": extract_url,
-        }
+    """Analizador para contar menciones de entidades en texto crudo."""
 
-    def analyze(self, line_stream: Iterable[str]) -> dict:
-        """
-        Procesa un flujo de líneas y acumula el total de menciones por cada entidad.
+    def __init__(self) -> None:
+        self.counts = {"dates": 0, "emails": 0, "phones": 0, "urls": 0}
 
-        :param line_stream: Iterable que entrega líneas de texto crudo.
-        :return: Diccionario con los conteos totales (e.g., {'total_emails': 5}).
-        """
-        counts = {f"total_{key}": 0 for key in self.extractors}
+    def analyze(self, line: str) -> None:
+        """Ejecuta todos los extractores sobre la línea cruda."""
+        if not line.strip():
+            return
 
-        for line in line_stream:
-            if not line.strip():
-                continue
+        self.counts["dates"] += len(extract_date(line))
+        self.counts["emails"] += len(extract_email(line))
+        self.counts["phones"] += len(extract_phone(line))
+        self.counts["urls"] += len(extract_url(line))
 
-            for key, extractor in self.extractors.items():
-                counts[f"total_{key}"] += len(extractor(line))
-
-        return counts
+    def get_report(self) -> dict:
+        """Retorna los conteos totales de cada tipo de entidad."""
+        return {f"total_{k}": v for k, v in self.counts.items()}

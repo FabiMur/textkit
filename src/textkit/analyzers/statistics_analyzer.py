@@ -1,55 +1,51 @@
 from collections import Counter
-from collections.abc import Iterable
 
 
 class StatisticsAnalyzer:
-    def analyze(self, token_stream: Iterable[list[str]]) -> dict:
+    def __init__(self) -> None:
+        self.word_counts: Counter = Counter()
+        self.total_chars: int = 0
+        self.total_tokens: int = 0
+
+    def analyze(self, token_list: list[str]) -> None:
         """
-        Orquesta el cálculo de métricas.
+        Procesa una lista de tokens y acumula las métricas.
 
-        :param token_stream: Flujo de listas de tokens.
-        :type token_stream: Iterable[list[str]]
-        :return: Diccionario con los resultados del análisis estadístico.
-        :rtype: dict[Any, Any]
-        :raises TypeError: Si el flujo de entrada no es procesable.
+        :param token_list: Lista de palabras de la línea actual.
+        :raises TypeError: Si la entrada no es una lista de strings.
         """
-        word_counts = Counter()
-        total_chars = 0
-        total_tokens = 0
 
-        try:
-            for token_list in token_stream:
-                total_tokens += len(token_list)
-                total_chars += sum(len(str(t)) for t in token_list)
-                word_counts.update(token_list)
-        except TypeError as e:
-            raise TypeError(f"Formato de entrada inválido: {e}") from e
+        self.total_tokens += len(token_list)
+        self.total_chars += sum(len(str(t)) for t in token_list)
+        self.word_counts.update(token_list)
 
-        if total_tokens == 0:
+    def get_report(self) -> dict:
+        """Calcula y retorna los resultados finales del análisis."""
+        if self.total_tokens == 0:
             return {}
 
         return {
-            "total_tokens": total_tokens,
-            "unique_tokens": len(word_counts),
-            "lexical_density": self._calculate_lexical_density(len(word_counts), total_tokens),
-            "avg_token_length": self._calculate_avg_length(total_chars, total_tokens),
-            "rare_words": self._rare_words(word_counts),
+            "total_tokens": self.total_tokens,
+            "unique_tokens": len(self.word_counts),
+            "lexical_density": self._calculate_lexical_density(),
+            "avg_token_length": self._calculate_avg_length(),
+            "rare_words": self._get_rare_words(limit=5),
         }
 
-    def _calculate_lexical_density(self, unique_count: int, total_count: int) -> float:
+    def _calculate_lexical_density(self) -> float:
         """
         Calcula la densidad léxica. Un valor cercano a 1 indica una gran variedad.
         """
-        return round(unique_count / total_count, 2)
+        return round(len(self.word_counts) / self.total_tokens, 2)
 
-    def _calculate_avg_length(self, total_chars: int, total_tokens: int) -> float:
+    def _calculate_avg_length(self) -> float:
         """
         Calcula la longitud media de los tokens.
         """
-        return round(total_chars / total_tokens, 2)
+        return round(self.total_chars / self.total_tokens, 2)
 
-    def _rare_words(self, counts: Counter, limit: int = 5) -> list[str]:
+    def _get_rare_words(self, limit: int) -> list[str]:
         """
         Identifica las palabras que aparecen una sola vez.
         """
-        return [word for word, count in counts.items() if count == 1][:limit]
+        return [word for word, count in self.word_counts.items() if count == 1][:limit]
