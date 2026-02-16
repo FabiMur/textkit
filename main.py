@@ -1,5 +1,5 @@
 from textkit.cli import create_parser
-from textkit.pipelines import extract_pipeline, transform_pipeline
+from textkit.pipelines import analyze_pipeline, extract_pipeline, transform_pipeline
 
 
 def main():
@@ -10,6 +10,8 @@ def main():
         extract_pipeline(args)
     if args.command == "transform":
         transform_pipeline(args)
+    if args.command == "analyze":
+        analyze_pipeline(args)
 
 
 if __name__ == "__main__":
