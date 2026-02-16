@@ -29,6 +29,11 @@ def create_parser() -> argparse.ArgumentParser:
     transform_parser.add_argument(
         "--output", help="Path to the output file.", default="transformed.txt", type=str
     )
-    # TODO: Define transformation operations and their arguments
+    transform_parser.add_argument(
+        "--transformations",
+        choices=["clean", "normalize", "tokenize_words", "tokenize_sentences"],
+        required=True,
+        help="Transformation operations to apply in order",
+    )
 
     return parser
