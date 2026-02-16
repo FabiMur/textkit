@@ -43,8 +43,10 @@ textkit [analyze | extract | transform] [options]
 ### Analyze
 Analyze a text file and generate.
 ```bash
-textkit analyze --input FILE --output FILE
+textkit analyze --input FILE --output FILE --ngram_size N
 ```
+Where `N`can be 1, 2, 3, 4 or 5 for unigrams, bigrams, trigrams, four-grams, or five-grams.
+
 ### Extract
 ```bash
 textkit extract --input FILE --type TYPE
