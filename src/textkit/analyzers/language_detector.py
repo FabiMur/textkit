@@ -1,33 +1,40 @@
-from .sequence_analyzer import SequenceAnalyzer
+from collections import Counter
 
 
 class LanguageDetector:
     def __init__(self) -> None:
-        self.all_trigrams: set[str] = set()
+        self.suffix_counts: Counter = Counter()
         self.profiles = {
-            "es": {"cio", "est", "ado"},
-            "en": {"the", "ing", "ion"},
-            "fr": {"ons", "ais", "eau"},
+            "es": {"cio", "est", "ado", "ito", "ona"},
+            "en": {"ing", "ion", "ght", "ish", "thm"},
+            "fr": {"ons", "ais", "eau", "eur", "tte"},
         }
 
     def analyze(self, token_list: list[str]) -> None:
-        """Extrae trigramas de la línea y los añade al estado global."""
-        text_line = "".join(token_list).lower()
-
-        trigrams = SequenceAnalyzer.generate_sequences(text_line, 3)
-        self.all_trigrams.update("".join(tg) for tg in trigrams)
+        """Analiza las últimas 3 letras de cada palabra."""
+        for word in token_list:
+            word_lower = word.lower()
+            if len(word_lower) >= 3:
+                suffix = word_lower[-3:]
+                self.suffix_counts.update([suffix])
 
     def get_report(self) -> dict:
-        """Compara trigramas acumulados con perfiles lingüísticos."""
-        scoring = {
-            lang: len(self.all_trigrams.intersection(profile))
-            for lang, profile in self.profiles.items()
-        }
+        """Genera el reporte comparando sufijos con los perfiles."""
+        detailed_scoring = {}
+        totals = {}
 
-        winner = self._identify_winner(scoring)
-        return {"detected_language": winner, "language_scores": scoring}
+        for lang, profile in self.profiles.items():
+            matches = {
+                suf: self.suffix_counts[suf] for suf in profile if self.suffix_counts[suf] > 0
+            }
+            detailed_scoring[lang] = matches
+            totals[lang] = sum(matches.values())
 
-    def _identify_winner(self, scoring: dict[str, int]) -> str:
-        if not scoring or sum(scoring.values()) == 0:
+        winner = self._identify_winner(totals)
+
+        return {"detected_language": winner, "language_scores": detailed_scoring}
+
+    def _identify_winner(self, totals: dict[str, int]) -> str:
+        if not totals or sum(totals.values()) == 0:
             return "unknown"
-        return max(scoring, key=scoring.get)  # type: ignore
+        return max(totals, key=totals.get)  # type: ignore

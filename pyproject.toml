@@ -5,7 +5,6 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "setuptools<82.0.0",
 ]
 
 [dependency-groups]
@@ -14,8 +13,6 @@ dev = [
     "pyright>=1.1.408",
     "pytest>=9.0.2",
     "ruff>=0.15.1",
-    "stopwordsiso>=0.6.1",
-    "setuptools<82.0.0",
 ]
 
 # =============================================================================
