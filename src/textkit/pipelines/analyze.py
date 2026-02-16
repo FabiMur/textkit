@@ -13,31 +13,36 @@ from src.textkit.transformers import clean_text, normalize_text, remove_stopword
 
 
 def analyze_pipeline(args: argparse.Namespace) -> None:
-    """Orquesta el análisis y genera un reporte en formato JSON."""
+    """Pipeline for análisis that generates report in JSON format."""
     reader = Reader(args.input)
 
     n_size = args.ngram_size
 
+    stats_analyzer = StatisticsAnalyzer()
+    seq_analyzer = SequenceAnalyzer()
+    lang_detector = LanguageDetector()
+    ext_analyzer = ExtractAnalyzer()
+
     for line in reader.read():
-        ExtractAnalyzer().analyze(line)
+        ext_analyzer.analyze(line)
 
         processed = normalize_text(clean_text(line))
 
         tokens = tokenize_words(processed)
-        cleaned_tokens = tokenize_words(remove_stopwords(processed))
+        cleaned_tokens = remove_stopwords(processed)
 
         if tokens:
-            StatisticsAnalyzer().analyze(tokens)
-            SequenceAnalyzer().analyze(cleaned_tokens, n=n_size)
-            LanguageDetector().analyze(tokens)
+            stats_analyzer.analyze(tokens)
+            seq_analyzer.analyze(cleaned_tokens, n=n_size)
+            lang_detector.analyze(tokens)
 
     report_data = {
         "metadata": {"source": args.input, "ngram_size": n_size},
         "results": {
-            "statistics": StatisticsAnalyzer().get_report(),
-            "language_detection": LanguageDetector().get_report(),
-            "sequences": SequenceAnalyzer().get_report(n=n_size),
-            "entity_counts": ExtractAnalyzer().get_report(),
+            "statistics": stats_analyzer.get_report(),
+            "language_detection": lang_detector.get_report(),
+            "sequences": seq_analyzer.get_report(n=n_size),
+            "entity_counts": ext_analyzer.get_report(),
         },
     }
 
@@ -45,7 +50,7 @@ def analyze_pipeline(args: argparse.Namespace) -> None:
 
 
 def _write_json_report(output_file: str, data: dict) -> None:
-    """Escribe el diccionario de datos en un archivo con formato JSON."""
+    """Writes the data dictionary to a JSON file."""
     output_path = Path(output_file)
 
     with output_path.open("w", encoding="utf-8") as writer:
