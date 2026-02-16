@@ -13,7 +13,7 @@ class Reader:
 
     def read(self):
         """
-        Docstring for read
+        Reads the input file according to its extension.
 
         :type self: Reader
         """
