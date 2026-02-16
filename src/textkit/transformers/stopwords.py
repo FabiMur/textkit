@@ -11,7 +11,7 @@ def _load_stopwords(lang: str) -> set[str]:
     return {word.strip() for word in path.read_text(encoding="utf-8").splitlines() if word.strip()}
 
 
-def remove_stopwords(text: str) -> str:
+def remove_stopwords(text: str) -> list[str]:
     """
     Remove stopwords (ES, EN, FR) from text.
 
@@ -30,4 +30,4 @@ def remove_stopwords(text: str) -> str:
 
     cleaned_words = [word for word in words if word.lower() not in all_stopwords]
 
-    return " ".join(cleaned_words)
+    return cleaned_words
