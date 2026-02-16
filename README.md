@@ -65,8 +65,10 @@ textkit extract --input document.txt --type email
 textkit trasnform --input FILE -opeartion OPERATION
 ```
 Where `OPERATION` can be:
-
-- 
+- normalize
+- clean
+- tokenize_words
+- tokenize_sentenes
 
 Example:
 ```bash
