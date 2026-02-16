@@ -6,6 +6,12 @@ from src.textkit.analyzers import (
     StatisticsAnalyzer,
 )
 
+"""
+==========================
+Fixtures
+==========================
+"""
+
 
 @pytest.fixture
 def sample_tokens() -> list[list[str]]:
@@ -21,6 +27,13 @@ def sample_lines() -> list[str]:
         "Teléfono: +34 900123123",
         "Fecha: 01/01/2025",
     ]
+
+
+"""
+==========================
+Tests para StatisticsAnalyzer
+==========================
+"""
 
 
 class TestStatisticsAnalyzer:
@@ -39,6 +52,13 @@ class TestStatisticsAnalyzer:
         analyzer = StatisticsAnalyzer()
         results = analyzer.get_report()
         assert results == {}
+
+
+"""
+==========================
+Tests para SequenceAnalyzer
+==========================
+"""
 
 
 class TestSequenceAnalyzer:
@@ -64,27 +84,49 @@ class TestSequenceAnalyzer:
             analyzer.analyze(["test"], n=10)
 
 
+"""
+==========================
+Tests para LanguageDetector
+==========================
+"""
+
+
 class TestLanguageDetector:
-    @pytest.mark.parametrize(
-        "lines, expected_lang",
-        [
-            ([["enunciación", "estado", "pasado"]], "es"),
-            ([["the", "king", "is", "playing"]], "en"),
-            ([["xyz", "abc"]], "unknown"),
-        ],
-    )
-    def test_detection(self, lines: list[list[str]], expected_lang: str) -> None:
+    def test_detection_spanish(self) -> None:
         detector = LanguageDetector()
-        for tokens in lines:
-            detector.analyze(tokens)
+        detector.analyze(["estado", "edificio", "pasado"])
 
         results = detector.get_report()
-        assert results["detected_language"] == expected_lang
+        assert results["detected_language"] == "es"
+        assert results["language_scores"]["es"]["ado"] == 2
+        assert results["language_scores"]["es"]["cio"] == 1
+
+    def test_detection_english(self) -> None:
+        detector = LanguageDetector()
+        detector.analyze(["playing", "action", "running"])
+
+        results = detector.get_report()
+        assert results["detected_language"] == "en"
+        assert results["language_scores"]["en"]["ing"] == 2
+
+    def test_detection_unknown(self) -> None:
+        detector = LanguageDetector()
+        detector.analyze(["xyz", "abc", "qwerty"])
+
+        results = detector.get_report()
+        assert results["detected_language"] == "unknown"
 
     def test_analyze_empty(self) -> None:
         detector = LanguageDetector()
         results = detector.get_report()
         assert results["detected_language"] == "unknown"
+
+
+"""
+==========================
+Tests para ExtractAnalyzer
+==========================
+"""
 
 
 class TestExtractAnalyzer:
