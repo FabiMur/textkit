@@ -1,27 +1,73 @@
 # TextKit
 
-TextKit is a lightweight command-line toolkit for text analysis and structured information extraction.
+TextKit es una herramienta de línea de comandos diseñada para el análisis de texto y la extracción de información estructurada.
 
-It is designed to process text efficiently using streaming techniques and a modular architecture.
 
-# Table of contents
+
+## Tabla de contenidos
 - [TextKit](#textkit)
-- [Table of contents](#table-of-contents)
-- [Installation](#installation)
-  - [CLI Usage](#cli-usage)
+  - [Tabla de contenidos](#tabla-de-contenidos)
+  - [Características principales:](#características-principales)
+  - [Estructura del proyecto](#estructura-del-proyecto)
+  - [Instalación](#instalación)
+  - [Uso de la CLI](#uso-de-la-cli)
     - [Analyze](#analyze)
     - [Extract](#extract)
     - [Transform](#transform)
-  - [Project Structure](#project-structure)
-    - [analyzers/](#analyzers)
-    - [extractors/](#extractors)
-    - [readers](#readers)
-    - [transformers](#transformers)
-  - [License](#license)
+  - [Licencia](#licencia)
 
 ---
 
-# Installation
+## Características principales:
+- **Transformación (transformers)**: Funciones para la limpieza de caracteres, normalización de texto, eliminación de stopwords (ES, EN, FR) y tokenización a nivel de palabra y sentencia.
+
+- **Extracción (extractors)**: Detección de entidades mediante expresiones regulares para capturar correos electrónicos, direcciones URL, formatos de fecha y números de teléfono.
+
+- **Análisis (analyzers)**: Componentes que mantienen el estado para calcular métricas globales como densidad léxica, detección de idioma basada en sufijos y conteo de n-gramas.
+
+---
+
+## Estructura del proyecto
+
+```text
+src/
+└── textkit/
+    ├── analyzers/
+    │   ├── __init__.py
+    │   ├── base_analyzer.py
+    │   ├── extract_analyzer.py
+    │   ├── language_detector.py
+    │   ├── sequence_analyzer.py
+    │   └── statistics_analyzer.py
+    │
+    ├── extractors/
+    │   ├── __init__.py
+    │   ├── date.py
+    │   ├── email.py
+    │   ├── patterns.py
+    │   ├── phone.py
+    │   └── url.py
+    │
+    ├── pipelines/
+    │   ├── __init__.py
+    │   ├── analyze.py
+    │   ├── extract.py
+    │   └── transform.py
+    │
+    ├── transformers/
+    │   ├── __init__.py
+    │   ├── cleaning.py
+    │   ├── normalization.py
+    │   ├── stopwords.py
+    │   ├── tokenization.py
+    │   └── resources/
+    │
+    └── __init__.py
+```
+
+---
+
+## Instalación
 
 Using uv:
 
@@ -35,17 +81,17 @@ pip install -e .
 
 ---
 
-## CLI Usage
-General syntax:
+## Uso de la CLI
+Sintaxis general:
 ```bash
 textkit [analyze | extract | transform] [options]
 ```
 ### Analyze
-Analyze a text file and generate.
+Analiza un archivo de texto y genera un informe.
 ```bash
 textkit analyze --input FILE --output FILE --ngram_size N
 ```
-Where `N`can be 1, 2, 3, 4 or 5 for unigrams, bigrams, trigrams, four-grams, or five-grams.
+Donde `N` puede ser 1, 2, 3, 4 o 5 para unigramas, bigramas, trigramas, cuatro-gramas o cinco-gramas.
 
 ### Extract
 ```bash
@@ -58,30 +104,24 @@ Where `TYPE` can be:
 - date
 - phone
 
-Example:
+Ejemplo:
 ```bash
 textkit extract --input document.txt --type email
 ```
 ### Transform
 ```bash
-textkit trasnform --input FILE -opeartion OPERATION
+textkit transform --input FILE --operation OPERATION
 ```
-Where `OPERATION` can be:
+Donde `OPERATION` puede ser:
 - normalize
 - clean
 - tokenize_words
 - tokenize_sentenes
 
-Example:
+Ejemplo:
 ```bash
-textkit extract --input document.txt --opeartion Operation
+textkit extract --input document.txt --opeartion normalize
 ```
----
-## Project Structure
-### analyzers/
-### extractors/
-### readers
-### transformers
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+## Licencia
+Este proyecto está licenciado bajo la Licencia MIT - vea el archivo [LICENSE](LICENSE) para más detalles
