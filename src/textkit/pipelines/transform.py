@@ -1,13 +1,16 @@
 import argparse
+import logging
 from pathlib import Path
 
 from textkit.reader import Reader
 from textkit.transformers import clean_text, normalize_text, tokenize_sentences, tokenize_words
 
+logger = logging.getLogger(__name__)
 sentence_endings = {".", "!", "?"}
 
 
 def transform_pipeline(args: argparse.Namespace):
+    logger.info(f"Starting transformation ({args.operation}) for: {args.input}")
     reader = Reader(args.input)
     buffer = ""
 
@@ -39,3 +42,5 @@ def transform_pipeline(args: argparse.Namespace):
                     writer.write(f"{item}\n")
             else:
                 writer.write(f"{result}\n")
+
+    logger.info(f"Transformation complete. Results saved to: {args.output}")

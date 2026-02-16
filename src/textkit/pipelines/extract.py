@@ -1,4 +1,5 @@
 import argparse
+import logging
 from pathlib import Path
 
 from textkit.extractors import (
@@ -9,12 +10,13 @@ from textkit.extractors import (
 )
 from textkit.reader import Reader
 
+logger = logging.getLogger(__name__)
+
 
 def extract_pipeline(args: argparse.Namespace):
-    # Create a reader instance
+    logger.info(f"Starting extraction ({args.type}) from: {args.input}")
     text_reader = Reader(args.input)
 
-    # Extract information using the extractors
     with Path(args.output).open("w") as output_file:
         for line in text_reader.read():
             if args.type == "email":
@@ -30,3 +32,5 @@ def extract_pipeline(args: argparse.Namespace):
 
             for element in extracted:
                 output_file.write(element + "\n")
+
+    logger.info(f"Extraction complete. Results saved to: {args.output}")

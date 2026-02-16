@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 from pathlib import Path
 
 from src.textkit.analyzers import (
@@ -11,11 +12,14 @@ from src.textkit.analyzers import (
 from src.textkit.reader import Reader
 from src.textkit.transformers import clean_text, normalize_text, remove_stopwords, tokenize_words
 
+logger = logging.getLogger(__name__)
+
 
 def analyze_pipeline(args: argparse.Namespace) -> None:
     """Pipeline for análisis that generates report in JSON format."""
-    reader = Reader(args.input)
+    logger.info(f"Starting analysis for: {args.input}")
 
+    reader = Reader(args.input)
     n_size = args.ngram_size
 
     stats_analyzer = StatisticsAnalyzer()
@@ -27,14 +31,16 @@ def analyze_pipeline(args: argparse.Namespace) -> None:
         ext_analyzer.analyze(line)
 
         processed = normalize_text(clean_text(line))
-
         tokens = tokenize_words(processed)
+
         cleaned_tokens = remove_stopwords(processed)
 
         if tokens:
             stats_analyzer.analyze(tokens)
             seq_analyzer.analyze(cleaned_tokens, n=n_size)
             lang_detector.analyze(tokens)
+
+    logger.info("Processing complete. Generating report...")
 
     report_data = {
         "metadata": {"source": args.input, "ngram_size": n_size},
@@ -47,6 +53,7 @@ def analyze_pipeline(args: argparse.Namespace) -> None:
     }
 
     _write_json_report(args.output, report_data)
+    logger.info(f"Report successfully saved to: {args.output}")
 
 
 def _write_json_report(output_file: str, data: dict) -> None:
