@@ -1,8 +1,13 @@
-import logging
+from textkit.cli import create_parser
+from textkit.pipelines import extract_pipeline
 
 
 def main():
-    logging.info("Hello from texkit!")
+    parser = create_parser()
+    args = parser.parse_args()
+
+    if args.command == "extract":
+        extract_pipeline(args)
 
 
 if __name__ == "__main__":
