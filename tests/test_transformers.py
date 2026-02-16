@@ -1,6 +1,14 @@
+from unittest.mock import patch
+
 import pytest
 
-from textkit.transformers import clean_text, normalize_text, tokenize_sentences, tokenize_words
+from textkit.transformers import (
+    clean_text,
+    normalize_text,
+    remove_stopwords,
+    tokenize_sentences,
+    tokenize_words,
+)
 
 
 # Testing for cleaning
@@ -118,3 +126,43 @@ class TestTokenization:
         :type expected_words: list[str]
         """
         assert tokenize_sentences(text) == expected_sentences
+
+
+class TestStopwords:
+    def test_remove_stopwords_all_languages(self):
+        """
+        Test if test_remove_stopwords correctly removes stopwords from Spanish, English, and French.
+        - Simulate the stopword lists for each language.
+        - Patch the `_load_stopwords` function to return our simulated lists.
+        """
+        sample_text = "hello world bonjour mundo hola"
+
+        fake_es = {"mundo", "hola"}
+        fake_en = {"hello", "world"}
+        fake_fr = {"bonjour"}
+
+        with patch("textkit.transformers.stopwords._load_stopwords") as mock_load:
+            mock_load.side_effect = lambda lang: {"es": fake_es, "en": fake_en, "fr": fake_fr}[lang]
+
+            result = remove_stopwords(sample_text)
+
+        assert result == []
+
+    def test_remove_stopwords_keeps_non_stopwords(self):
+        """
+        Test if test_remove_stopwords correctly keeps non-stopwords while removing stopwords.
+        - Simulamos las listas de stopwords para cada idioma con stopwords y no stopwords
+        - Parcheamos la función _load_stopwords para que devuelva nuestras listas simuladas
+        """
+        sample_text = "hello amazing world bonjour beautiful mundo hola"
+
+        fake_es = {"mundo", "hola"}
+        fake_en = {"hello", "world"}
+        fake_fr = {"bonjour"}
+
+        with patch("textkit.transformers.stopwords._load_stopwords") as mock_load:
+            mock_load.side_effect = lambda lang: {"es": fake_es, "en": fake_en, "fr": fake_fr}[lang]
+
+            result = remove_stopwords(sample_text)
+
+        assert result == ["amazing", "beautiful"]
