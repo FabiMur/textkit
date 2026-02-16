@@ -1,5 +1,5 @@
 from collections.abc import Iterator
-from zipfile import Path
+from pathlib import Path
 
 
 class Reader:
@@ -13,7 +13,7 @@ class Reader:
 
     def read(self):
         """
-        Docstring for read
+        Reads the input file according to its extension.
 
         :type self: Reader
         """
