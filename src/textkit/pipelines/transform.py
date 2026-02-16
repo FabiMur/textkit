@@ -10,7 +10,7 @@ def transform_pipeline(args: argparse.Namespace):
 
     with Path(args.output).open("w", encoding="utf-8") as writer:
         for line in reader.read():
-            chosen_transformation = args.transformation
+            chosen_transformation = args.operation
 
             if chosen_transformation == "clean":
                 result = clean_text(line)
