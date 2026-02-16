@@ -4,9 +4,12 @@ from pathlib import Path
 from textkit.reader import Reader
 from textkit.transformers import clean_text, normalize_text, tokenize_sentences, tokenize_words
 
+sentence_endings = {".", "!", "?"}
+
 
 def transform_pipeline(args: argparse.Namespace):
     reader = Reader(args.input)
+    buffer = ""
 
     with Path(args.output).open("w", encoding="utf-8") as writer:
         for line in reader.read():
@@ -23,6 +26,13 @@ def transform_pipeline(args: argparse.Namespace):
 
             elif chosen_transformation == "tokenize_sentences":
                 result = tokenize_sentences(line)
+
+                if buffer:
+                    if result:
+                        result[0] = buffer + " " + result[0]
+                    else:
+                        result = [buffer]
+                buffer = result[-1] if result and result[-1][-1] not in sentence_endings else ""
 
             if isinstance(result, list):
                 for item in result:

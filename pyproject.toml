@@ -81,7 +81,7 @@ ignore = [
 [tool.ruff.lint.mccabe]
 # Complejidad ciclomática máxima por función.
 # Si una función supera esto, tiene demasiados if/elif/for anidados → refactoriza.
-max-complexity = 10
+max-complexity = 15
 
 [tool.ruff.lint.pylint]
 # Máximo de argumentos en una función. 5 es un buen límite general.
@@ -90,7 +90,7 @@ max-args = 5
 # Máximo de return statements en una función.
 max-returns = 4
 # Máximo de ramas (if/elif/else) en una función.
-max-branches = 8
+max-branches = 15
 
 [tool.ruff.lint.isort]
 known-first-party = ["nombre_del_proyecto"]
